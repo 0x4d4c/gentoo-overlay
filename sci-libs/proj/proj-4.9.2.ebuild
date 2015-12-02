@@ -11,7 +11,6 @@ HOMEPAGE="http://trac.osgeo.org/proj/"
 SRC_URI="
 	http://download.osgeo.org/proj/${P}.tar.gz
 	http://download.osgeo.org/proj/${PN}-datumgrid-1.5.zip
-	http://trac.osgeo.org/proj/export/2190/tags/${PV}/proj/src/org_proj4_PJ.h -> ${P}-org_proj4_PJ.h
 "
 
 LICENSE="MIT"
@@ -28,7 +27,6 @@ src_unpack() {
 	unpack ${P}.tar.gz
 	cd "${S}"/nad || die
 	mv README README.NAD || die
-	cp "${DISTDIR}/${P}-org_proj4_PJ.h" "${S}/src/org_proj4_PJ.h" || die
 	unpack ${PN}-datumgrid-1.5.zip
 }
 
