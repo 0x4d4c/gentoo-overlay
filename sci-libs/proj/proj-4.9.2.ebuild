@@ -9,7 +9,7 @@ inherit eutils java-pkg-opt-2 flag-o-matic
 DESCRIPTION="Proj.4 cartographic projection software with updated NAD27 grids"
 HOMEPAGE="http://trac.osgeo.org/proj/"
 SRC_URI="
-	ftp://ftp.remotesensing.org/pub/proj/${P}.tar.gz
+	http://download.osgeo.org/proj/${P}.tar.gz
 	http://download.osgeo.org/proj/${PN}-datumgrid-1.5.zip
 	http://trac.osgeo.org/proj/export/2190/tags/${PV}/proj/src/org_proj4_PJ.h -> ${P}-org_proj4_PJ.h
 "
