@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<maintainer type="person">
+	<email>gentoo@0x4d4c.xyz</email>
+</maintainer>
+<use>
+	<flag name="i3">Compile in support for the <pkg>x11-wm/i3</pkg> window manager</flag>
+	<flag name="windowmode">Enable normal window mode</flag>
+</use>
+<upstream>
+	<remote-id type="github">DaveDavenport/rofi</remote-id>
+</upstream>
+</pkgmetadata>
