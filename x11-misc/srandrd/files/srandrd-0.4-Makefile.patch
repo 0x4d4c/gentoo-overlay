@@ -1,0 +1,18 @@
+--- Makefile.orig	2016-09-10 11:17:28.398893952 +0200
++++ Makefile	2016-09-10 12:02:57.796732196 +0200
+@@ -14,12 +14,12 @@
+ MANPREFIX		?= $(PREFIX)/share/man
+ MANPREFIX		:= $(DESTDIR)$(MANPREFIX)
+ 
+-CFLAGS		:= -Wall -Os -pedantic -std=c99 #-Werror -Wextra
+-CPPFLAGS  += -D_BSD_SOURCE -D_XOPEN_SOURCE=600
++CFLAGS		+= -Wall -pedantic -std=c99 ${EXTRACFLAGS} #-Werror -Wextra
++CPPFLAGS  += -D_DEFAULT_SOURCE -D_XOPEN_SOURCE=600
+ CPPFLAGS  += -DNAME=\"$(TARGET)\" -DVERSION=\"$(VERSION)\" 
+ CPPFLAGS	+= -DCOPYRIGHT=\"$(COPYRIGHT)\" -DLICENSE=\"$(LICENSE)\"
+ 
+-LDFLAGS		:= -lX11 -lXrandr
++LDFLAGS		+= -lX11 -lXrandr
+ 
+ all: $(TARGET)
+ 

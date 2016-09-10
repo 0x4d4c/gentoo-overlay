@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <maintainer type="person">
+    <email>entoo@0x4d4c.xyz</email>
+  </maintainer>
+  <longdescription lang="en">
+    srandrd is a tool that executes a command when xorg output changes
+  </longdescription>
+</pkgmetadata>
