@@ -12,7 +12,7 @@ SRC_URI="https://github.com/dmedvinsky/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.g
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="gtk"
+IUSE=""
 
 COMMON_DEPEND="x11-libs/gtk+:3"
 DEPEND="
