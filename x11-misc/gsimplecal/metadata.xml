@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <maintainer type="person">
+    <email>gentoo@0x4d4c.xyz</email>
+  </maintainer>
+  <longdescription lang="en">
+    Gsimplecal is a lightweight calendar applet written in C++ using GTK.
+  </longdescription>
+</pkgmetadata>
