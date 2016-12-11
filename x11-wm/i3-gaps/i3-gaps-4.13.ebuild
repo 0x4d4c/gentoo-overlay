@@ -4,18 +4,16 @@
 
 EAPI=6
 
-inherit git-r3
+inherit autotools
 
 DESCRIPTION="i3 with more features"
 HOMEPAGE="https://github.com/Airblader/i3.git"
-
-EGIT_REPO_URI="https://github.com/Airblader/i3.git"
-EGIT_BRANCH="gaps"
-EGIT_COMMIT="7db96987682251af574014df054fc584c985e859"
+SRC_URI="https://github.com/Airblader/i3/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64"
+IUSE="doc"
 
 CDEPEND="dev-libs/libev
 	dev-libs/libpcre
@@ -26,39 +24,54 @@ CDEPEND="dev-libs/libev
 	x11-libs/xcb-util
 	x11-libs/xcb-util-cursor
 	x11-libs/xcb-util-keysyms
-	x11-libs/xcb-util-xrm
 	x11-libs/xcb-util-wm
+	x11-libs/xcb-util-xrm
 	>=x11-libs/cairo-1.14.4[X,xcb]
 	>=x11-libs/pango-1.30.0[X]"
 DEPEND="${CDEPEND}
+	doc? ( app-text/asciidoc app-text/xmlto dev-lang/perl )
 	virtual/pkgconfig"
 RDEPEND="${CDEPEND}
 	dev-lang/perl
 	dev-perl/AnyEvent-I3
-	dev-perl/JSON-XS
-	!x11-wm/i3"
+	dev-perl/JSON-XS"
 
 DOCS=( RELEASE-NOTES-${PV} )
 
+S="${WORKDIR}/i3-${PV}"
+
 src_prepare() {
 	default
-	cat <<- EOF > "${T}"/i3-gaps
+	if ! use doc ; then
+		sed -e '/AC_PATH_PROG(\[PATH_ASCIIDOC/d' -i configure.ac || die
+		eautoreconf
+	fi
+	cat <<- EOF > "${T}"/i3wm
 		#!/bin/sh
 		exec /usr/bin/i3
 	EOF
-	epatch_user
+}
+
+src_configure() {
+	local myeconfargs=( --enable-debug=no )  # otherwise injects -O0 -g
+	econf "${myeconfargs[@]}"
 }
 
 src_compile() {
-	emake V=1 CC="$(tc-getCC)" AR="$(tc-getAR)"
-	emake -C man/
+	emake -C "${CBUILD}"
 }
 
 src_install() {
-	default
-	doman man/*.1
+	emake -C "${CBUILD}" DESTDIR="${D}" install
+	if ! use doc ; then
+		# install docs shipped with source tarball
+		# local HTML_DOCS=( docs/. ) # TODO: install unconditionally?
+		doman man/*.1
+	fi
+	einstalldocs
+
 	exeinto /etc/X11/Sessions
-	doexe "${T}"/i3-gaps
+	doexe "${T}"/i3wm
 }
 
 pkg_postinst() {
