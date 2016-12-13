@@ -13,7 +13,6 @@ SRC_URI="https://github.com/Airblader/i3/archive/${PV}.tar.gz -> ${P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64"
-IUSE="doc"
 
 CDEPEND="dev-libs/libev
 	dev-libs/libpcre
@@ -29,23 +28,32 @@ CDEPEND="dev-libs/libev
 	>=x11-libs/cairo-1.14.4[X,xcb]
 	>=x11-libs/pango-1.30.0[X]"
 DEPEND="${CDEPEND}
-	doc? ( app-text/asciidoc app-text/xmlto dev-lang/perl )
 	virtual/pkgconfig"
 RDEPEND="${CDEPEND}
 	dev-lang/perl
 	dev-perl/AnyEvent-I3
 	dev-perl/JSON-XS"
 
-DOCS=( RELEASE-NOTES-${PV} )
+if ! has nodoc ${FEATURES}; then
+	DEPEND="${DEPEND} app-text/asciidoc"
+fi
+
+if ! has noman ${FEATURES}; then
+	DEPEND="${DEPEND} app-text/asciidoc app-text/xmlto dev-lang/perl"
+fi
 
 S="${WORKDIR}/i3-${PV}"
 
 src_prepare() {
 	default
-	if ! use doc ; then
-		sed -e '/AC_PATH_PROG(\[PATH_ASCIIDOC/d' -i configure.ac || die
-		eautoreconf
+	sed -i 's/-non-git//' I3_VERSION
+	if has nodoc ${FEATURES}; then
+		sed -e 's/\(AM_CONDITIONAL(\[BUILD_DOCS\],\).*/\1 false)/' -i configure.ac || die
 	fi
+	if has noman ${FEATURES}; then
+		sed -e 's/\(AM_CONDITIONAL(\[BUILD_MANS\],\).*/\1 false)/' -i configure.ac || die
+	fi
+	eautoreconf
 	cat <<- EOF > "${T}"/i3wm
 		#!/bin/sh
 		exec /usr/bin/i3
@@ -53,7 +61,7 @@ src_prepare() {
 }
 
 src_configure() {
-	local myeconfargs=( --enable-debug=no )  # otherwise injects -O0 -g
+	local myeconfargs=( --enable-debug=no --disable-maintainer-mode )
 	econf "${myeconfargs[@]}"
 }
 
@@ -63,13 +71,6 @@ src_compile() {
 
 src_install() {
 	emake -C "${CBUILD}" DESTDIR="${D}" install
-	if ! use doc ; then
-		# install docs shipped with source tarball
-		# local HTML_DOCS=( docs/. ) # TODO: install unconditionally?
-		doman man/*.1
-	fi
-	einstalldocs
-
 	exeinto /etc/X11/Sessions
 	doexe "${T}"/i3wm
 }
