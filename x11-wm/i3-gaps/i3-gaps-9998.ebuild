@@ -1,10 +1,10 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
 EAPI=6
 
-inherit git-r3
+inherit autotools git-r3
 
 DESCRIPTION="i3 with more features"
 HOMEPAGE="https://github.com/Airblader/i3.git"
@@ -42,26 +42,40 @@ RDEPEND="${CDEPEND}
 	!x11-wm/i3"
 
 DOCS=( RELEASE-NOTES-${PV} )
+BUILDDIR="${S}/build"
 
 src_prepare() {
 	default
-	cat <<- EOF > "${T}"/i3-gaps
+	eautoreconf
+	sed -i 's/-non-git//' I3_VERSION
+	if has nodoc ${FEATURES}; then
+		sed -e 's/\(AM_CONDITIONAL(\[BUILD_DOCS\],\).*/\1 false)/' -i configure.ac || die
+	fi
+	if has noman ${FEATURES}; then
+		sed -e 's/\(AM_CONDITIONAL(\[BUILD_MANS\],\).*/\1 false)/' -i configure.ac || die
+	fi
+	cat <<- EOF > "${T}"/i3wm
 		#!/bin/sh
 		exec /usr/bin/i3
 	EOF
-	epatch_user
+}
+
+src_configure() {
+	mkdir "${BUILDDIR}"
+	cd "${BUILDDIR}"
+	../configure
 }
 
 src_compile() {
-	emake V=1 CC="$(tc-getCC)" AR="$(tc-getAR)"
-	emake -C man/
+	cd "${BUILDDIR}"
+	emake V=1
 }
 
 src_install() {
-	default
-	doman man/*.1
+	cd "${BUILDDIR}"
+	emake DESTDIR="${D}" install
 	exeinto /etc/X11/Sessions
-	doexe "${T}"/i3-gaps
+	doexe "${T}"/i3wm
 }
 
 pkg_postinst() {
