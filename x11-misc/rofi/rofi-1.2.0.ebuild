@@ -1,8 +1,10 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
 EAPI=6
+
+inherit autotools eutils
 
 DESCRIPTION="A window switcher, run dialog and dmenu replacement"
 HOMEPAGE="https://davedavenport.github.io/rofi/"
