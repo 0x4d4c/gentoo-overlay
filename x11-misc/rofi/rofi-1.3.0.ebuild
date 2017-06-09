@@ -4,7 +4,7 @@
 
 EAPI=6
 
-inherit autotools eutils
+inherit eutils
 
 DESCRIPTION="A window switcher, run dialog and dmenu replacement"
 HOMEPAGE="https://davedavenport.github.io/rofi/"
@@ -38,14 +38,6 @@ DEPEND="
 	x11-proto/xproto
 	virtual/pkgconfig
 "
-
-src_prepare() {
-	default
-	epatch \
-		"${FILESDIR}"/${PN}-0.15.12-Werror.patch
-
-	eautoreconf
-}
 
 src_configure() {
 	tc-export CC
